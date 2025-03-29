@@ -9,7 +9,7 @@ export default function Home() {
       <header className="flex gap-6 flex-wrap items-center justify-center">
         <ThemeToggle />
       </header>
-      <main className="row-start-2 items-center border border-2 shadow-md max-w-[50vw] rounded-lg p-4">
+      <main className="row-start-2 items-start border border-2 shadow-md md:w-[750px] md:min-h-[500px] rounded-lg p-4">
         <SignUpForm />
       </main >
     </div >

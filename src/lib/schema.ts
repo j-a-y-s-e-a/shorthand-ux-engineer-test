@@ -4,7 +4,6 @@ import { z } from "zod";
 export const organizationSizes = ["1-50", "51-200", "201-500", "501-1000", "1000+"] as const;
 export const pricingPlanOptions = ["hobby", "professional", "enterprise"] as const;
 
-// TODO: Add more robust validation
 export const formSchema = z.object({
   /* Step 1: Personal Information */
   name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
