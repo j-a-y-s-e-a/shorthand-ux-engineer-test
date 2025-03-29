@@ -1,14 +1,13 @@
 "use client";
 
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { createUser } from "@/server/actions";
 
 export default function Home() {
   return (
-    <div className="container grid grid-rows-[20px_1fr] items-center justify-center min-h-screen p-8 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] bg-gray-600">
+    <div className="container grid grid-rows-[20px_1fr] items-center justify-center min-h-screen p-8 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <header className="flex gap-6 flex-wrap items-center justify-center">
-        <button>
-          Change theme
-        </button>
+        <ThemeToggle />
       </header>
       <main className="flex flex-col gap-8 row-start-2 items-center bg-amber-800 h-[200px] w-full rounded-lg p-4">
         <div className="grid grid-rows-[30px_1fr] gap-4 w-full h-full">
