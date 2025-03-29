@@ -79,15 +79,29 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="grid grid-rows-[30px_1fr] gap-4 w-full h-full">
-      <div>
-        Progress: {calculateProgress}%
-        Step {page + 1} of {MAX_PAGE_COUNT + 1}
+    <div className="grid grid-rows-[auto_1fr] gap-4 overflow-y-auto p-4 rounded-md border shadow-md w-[80vw] sm:w-[500px] min-h-[500px]">
+      <div className="flex flex-row gap-4 justify-between text-muted-foreground text-sm font-mono tracking-tighter">
+        <div className="flex flex-row gap-4">
+          <div>
+            Progress
+          </div>
+          <div>
+            {calculateProgress}%
+          </div>
+        </div>
+        <div className="flex flex-row gap-4">
+          <h1>
+            Step
+          </h1>
+          <div>
+            {page + 1} {'/'} {MAX_PAGE_COUNT + 1}
+          </div>
+        </div>
       </div>
       <div>
         <Form {...form}>
           <form
-            className="space-y-8"
+            className="grid grid-rows-[1fr_auto] gap-4 h-full"
             onSubmit={form.handleSubmit(async (formData) => {
               const response = await createUser(formData);
 
@@ -97,270 +111,285 @@ export function SignUpForm() {
                 console.error("Error creating user");
               }
             })}>
-            <div>
-              <h2 className="text-2xl tracking-tight">{formSteps[page].title}</h2>
-            </div>
-
-            {/** Step 1: Personal Information */}
-            {page === 0 && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative flex flex-row items-center justify-between">
-                          <Input type={showPassword ? "text" : "password"} {...field} />
-                          <Button variant="ghost" size="icon" type="button" onClick={togglePasswordVisibility} className="absolute right-0 p-0 m-0 rounded-l-none">
-                            {showPassword ? <Eye /> : <EyeClosed />}
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            {/** Step 2: Organisational Information */}
-            {page === 1 && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="organizationName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Organization Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="organizationSize"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Employee Count</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a size" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {organizationSizes.map((size, index) => (
-                            <SelectItem key={`${size}-${index}`} value={size}>{size}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>
-                        The number of employees at your organization
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="organizationCategory"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Organization Category</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        The category of the Organization
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            {/** Step 3: User Role and Team Members */}
-            {page === 2 && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="userRole"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>User Role</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Your Role
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="space-y-4">
-                  {invites.map((field, index) => (
-                    <div key={field.id} className="flex items-end gap-3">
-                      <FormField
-                        control={form.control}
-                        name={`teamMemberInvites.${index}.email`}
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormLabel className={index !== 0 ? "sr-only" : "text-base"}>Email</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                className="h-12 rounded-lg border-2 focus-visible:ring-2 focus-visible:ring-offset-1"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeInvite(index)}
-                        className="h-12 w-12 rounded-lg hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  ))}
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="lg"
-                    className="mt-4 w-full border-dashed border-2"
-                    onClick={() => addInvite({ email: "" })}
-                  >
-                    <Plus className="mr-2 h-5 w-5" />
-                    Add Team Member
-                  </Button>
-                </div>
-              </>
-            )}
-            {/** Step 4: Pricing PLan and Terms */}
-            {page === 3 && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="pricingPlan"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Pricing Plan</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a pricing plan" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {pricingPlanOptions.map((plan, index) => (
-                            <SelectItem key={`${plan}-${index}`} value={plan}>{plan}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>
-                        The Pricing Plan Option
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            {/** Step 5: Terms and Conditions */}
-            {page === 4 && (
-              <div className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="acceptTermsAndConditions"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Terms and Conditions
-                        </FormLabel>
-                        <FormDescription>
-                          Do you accept the terms and conditions?
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="acceptMailingList"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Mailing List
-                        </FormLabel>
-                        <FormDescription>
-                          Do you wish to sign up for the mailing list?
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl tracking-tight leading-none">{formSteps[page].title}</h2>
               </div>
-            )}
-            {/** Confirmation Page */}
-            {page === 5 && (
-              <div className="grid grid-cols-2">
-                <div className="space-y-8">
+
+              {/** Step 1: Personal Information */}
+              {page === 0 && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Name</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Email</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field, fieldState }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Password</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <div className="relative flex flex-row items-center justify-between">
+                            <Input type={showPassword ? "text" : "password"} {...field} {...(fieldState.error && { "aria-invalid": true })} />
+                            <Button variant="ghost" size="icon" type="button" onClick={togglePasswordVisibility} className="absolute right-0 p-0 m-0 rounded-l-none">
+                              {showPassword ? <Eye /> : <EyeClosed />}
+                            </Button>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+              {/** Step 2: Organisational Information */}
+              {page === 1 && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="organizationName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Organization Name</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="organizationSize"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Employee Count</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a size" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {organizationSizes.map((size, index) => (
+                              <SelectItem key={`${size}-${index}`} value={size}>{size}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          The number of employees at your organization
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="organizationCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Organization Category</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          The category of the Organization
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+              {/** Step 3: User Role and Team Members */}
+              {page === 2 && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="userRole"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>User Role</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
                   <div className="space-y-4">
-                    <h3 className="text-lg">Personal Information</h3>
+                    {invites.map((field, index) => (
+                      <div key={field.id} className="flex items-end gap-3">
+                        <FormField
+                          control={form.control}
+                          name={`teamMemberInvites.${index}.email`}
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <div className="flex flex-row items-center justify-between">
+                                <FormLabel className={index !== 0 ? "sr-only" : "text-sm"}>Email</FormLabel>
+                                <FormMessage />
+                              </div>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeInvite(index)}
+                          className="h-12 w-12 rounded-lg hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    ))}
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="mt-4 w-full border-dashed border-2"
+                      onClick={() => addInvite({ email: "" })}
+                    >
+                      <Plus className="mr-2 h-5 w-5" />
+                      Add Team Member
+                    </Button>
+                  </div>
+                </>
+              )}
+              {/** Step 4: Pricing PLan and Terms */}
+              {page === 3 && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="pricingPlan"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Pricing Plan</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a pricing plan" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {pricingPlanOptions.map((plan, index) => (
+                              <SelectItem key={`${plan}-${index}`} value={plan}>{plan}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          The Pricing Plan Option
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+              {/** Step 5: Terms and Conditions */}
+              {page === 4 && (
+                <div className="flex flex-col gap-4">
+                  <FormField
+                    control={form.control}
+                    name="acceptMailingList"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div>
+                          <FormLabel className="mb-2">
+                            Mailing List
+                          </FormLabel>
+                          <FormDescription>
+                            Do you wish to sign up for the mailing list?
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="acceptTermsAndConditions"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-4">
+                          <FormLabel className="mb-2">
+                            Terms and Conditions
+                          </FormLabel>
+                          <FormDescription>
+                            Do you accept the terms and conditions?
+                          </FormDescription>
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                </div>
+              )}
+              {/** Confirmation Page */}
+              {page === 5 && (
+                <div className="grid grid-cols-2 text-sm">
+                  <div className="space-y-6">
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Name
                       </span>
                       <span className="text-foreground">
@@ -368,17 +397,15 @@ export function SignUpForm() {
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Email
                       </span>
                       <span className="text-foreground">
                         {form.getValues().email}
                       </span>
                     </div>
-                  </div>
-                  <div className="space-y-4">
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         User Role
                       </span>
                       <span className="text-foreground">
@@ -386,7 +413,7 @@ export function SignUpForm() {
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Pricing Plan
                       </span>
                       <span className="text-foreground">
@@ -394,12 +421,9 @@ export function SignUpForm() {
                       </span>
                     </div>
                   </div>
-                </div>
-                <div className="space-y-8">
-                  <div className="space-y-4">
-                    <h3 className="text-lg">Organizational Information</h3>
+                  <div className="space-y-6">
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Organizational Name
                       </span>
                       <span className="text-foreground">
@@ -407,7 +431,7 @@ export function SignUpForm() {
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Organizational Size
                       </span>
                       <span className="text-foreground">
@@ -415,18 +439,16 @@ export function SignUpForm() {
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground">
                         Organizational Category
                       </span>
                       <span className="text-foreground">
                         {form.getValues().organizationCategory}
                       </span>
                     </div>
-                  </div>
-                  <div className="space-y-4">
                     <div className="flex flex-col gap-1">
-                      <span className="text-muted-foreground text-sm">
-                        Joined the mailing list
+                      <span className="text-muted-foreground">
+                        Joined the mailing list?
                       </span>
                       <span className="text-foreground">
                         {form.getValues().acceptMailingList ? 'Yes' : 'No'}
@@ -434,11 +456,10 @@ export function SignUpForm() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-
+              )}
+            </div>
             {/** Button Row */}
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row justify-end gap-4">
               {page > 0 && (
                 <Button type="button" onClick={handlePrevious}>
                   Previous
@@ -458,7 +479,7 @@ export function SignUpForm() {
           </form>
         </Form>
       </div>
-    </div>
+    </div >
   )
 }
 

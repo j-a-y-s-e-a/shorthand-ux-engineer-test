@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Oxygen, Oxygen_Mono } from "next/font/google";
 import { ThemeProvider } from '@/components/theme/theme-provider';
 
 import "@/styles/globals.css";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sans = Oxygen({
+  variable: "--font-oxygen-sans",
+  weight: ["300", "400", "700"],
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const mono = Oxygen_Mono({
+  variable: "--font-oxygen-mono",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -27,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sans.variable} ${mono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -35,6 +38,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div className="absolute top-2 right-2">
+            <ThemeToggle />
+          </div>
           {children}
         </ThemeProvider>
       </body>
