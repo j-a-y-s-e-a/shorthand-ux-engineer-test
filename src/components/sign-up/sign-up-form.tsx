@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Eye, EyeClosed, Plus, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react"
+import { toast } from "sonner";
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -117,12 +118,15 @@ export function SignUpForm() {
           <form
             className="grid grid-rows-[1fr_auto] gap-4 h-full"
             onSubmit={form.handleSubmit(async (formData) => {
+              console.log("Submitted Data:", JSON.stringify(formData, null, 4));
+
+              // Demo handling of data
               const response = await createUser(formData);
 
               if (response === "USER_CREATED") {
-                console.log("User created successfully");
+                toast.success(`Registration successful`)
               } else {
-                console.error("Error creating user");
+                toast.error(`Error: Registration unsuccessful (${response})`,)
               }
             })}>
 
@@ -453,14 +457,20 @@ export function SignUpForm() {
                             {form.getValues().userRole}
                           </span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-muted-foreground">
-                            Pricing Plan
-                          </span>
-                          <span className="text-foreground">
-                            {formatPlan(form.getValues().pricingPlan)}
-                          </span>
-                        </div>
+                        {form.getValues().teamMemberInvites && (
+                          <div className="flex flex-col gap-1">
+                            <span className="text-muted-foreground">
+                              Team Members Invited
+                            </span>
+                            <span className="text-foreground">
+                              {form.getValues().teamMemberInvites?.map((invite) => (
+                                <div>
+                                  {invite.email}
+                                </div>
+                              ))}
+                            </span>
+                          </div>
+                        )}
                       </div>
                       <div className="space-y-6  max-w-[20ch]">
                         <div className="flex flex-col gap-1">
@@ -485,6 +495,14 @@ export function SignUpForm() {
                           </span>
                           <span className="text-foreground">
                             {form.getValues().organizationCategory}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-muted-foreground">
+                            Pricing Plan
+                          </span>
+                          <span className="text-foreground">
+                            {formatPlan(form.getValues().pricingPlan)}
                           </span>
                         </div>
                         <div className="flex flex-col gap-1">

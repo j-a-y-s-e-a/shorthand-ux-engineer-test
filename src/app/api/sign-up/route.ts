@@ -1,7 +1,6 @@
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    console.log("Do something with the data", body);
+    // Handle request...
 
     return new Response("USER_CREATED", {
       status: 201,
@@ -13,7 +12,7 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error("Error parsing request body", error);
+    // Handle error...
 
     return new Response("USER_NOT_CREATED", {
       status: 418,

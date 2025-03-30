@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Oxygen, Oxygen_Mono } from "next/font/google";
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import { Toaster } from 'sonner'
 
 import "@/styles/globals.css";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -42,6 +43,7 @@ export default function RootLayout({
             <ThemeToggle />
           </div>
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
