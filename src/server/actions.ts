@@ -1,9 +1,10 @@
 "use server";
 
+import { FormData } from "@/components/sign-up/sign-up-form";
 import { BASE_URL } from "@/lib/constants";
 import { formSchema } from "@/lib/schema";
 
-export async function createUser(data: any) {
+export async function createUser(data: FormData) {
   // Validate data
   const { success: isValidData } = formSchema.safeParse(data);
 
