@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // z.enum only takes tuples so need to explicity type these as a tuple
 export const organizationSizes = ["1-50", "51-200", "201-500", "501-1000", "1000+"] as const;
-export const pricingPlanOptions = ["hobby", "professional", "enterprise"] as const;
+export const pricingPlanOptions = ["starter", "team", "business", "enterprise"] as const;
 
 export const formSchema = z.object({
   /* Step 1: Personal Information */

@@ -9,11 +9,13 @@ import { Eye, EyeClosed, Plus, Trash2 } from "lucide-react";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components//ui/checkbox";
 import { createUser } from "@/server/actions";
 import { formSchema, organizationSizes, pricingPlanOptions } from "@/lib/schema";
 import { MAX_PAGE_COUNT } from "@/lib/constants";
+import pricingPlans from "@/lib/plans.json";
 
 const formSteps = [
   { id: 'personal-information', title: "Personal Information", fields: ["name", "email", "password"] },
@@ -303,35 +305,32 @@ export function SignUpForm() {
               )}
               {/** Step 4: Pricing PLan and Terms */}
               {page === 3 && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="pricingPlan"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex flex-row items-center justify-between">
-                          <FormLabel>Pricing Plan</FormLabel>
-                          <FormMessage />
-                        </div>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a pricing plan" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {pricingPlanOptions.map((plan, index) => (
-                              <SelectItem key={`${plan}-${index}`} value={plan}>{plan}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          The Pricing Plan Option
-                        </FormDescription>
-                      </FormItem>
-                    )}
-                  />
-                </>
+                <FormField
+                  control={form.control}
+                  name="pricingPlan"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue="starter"
+                          className="grid grid-cols-2 w-full gap-0"
+                        >
+                          {pricingPlanOptions.map((plan, index) => (
+                            <div key={`${plan}-${index}`} className="relative flex items-center h-full p-2">
+                              <RadioGroupItem id={plan} value={plan} className="peer absolute opacity-0" />
+                              <FormLabel htmlFor={plan} className="flex flex-col items-start gap-4 p-2 border w-full h-full rounded text-xs peer-data-[state=checked]:bg-accent">
+                                <div className="text-start text-lg">{plan.charAt(0).toUpperCase() + plan.slice(1)}</div>
+                                <div className="text-muted-foreground">{pricingPlans[plan].description}</div>
+                                <div className="text-sm">{pricingPlans[plan].price}</div>
+                              </FormLabel>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               )}
               {/** Step 5: Terms and Conditions */}
               {page === 4 && (

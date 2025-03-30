@@ -1,0 +1,18 @@
+{
+  "starter": {
+    "description": "An introduction to premium visual storytelling.",
+    "price": "$40/month"
+  },
+  "team": {
+    "description": "Build your own themes & structure your work with teams.",
+    "price": "$400/month"
+  },
+  "business": {
+    "description": "Access publishing integrations & handcrafted branded themes.",
+    "price": "$800/month"
+  },
+  "enterprise": {
+    "description": "Important stories at scale with best-in-class compliance.",
+    "price": "Contact Us"
+  }
+}
