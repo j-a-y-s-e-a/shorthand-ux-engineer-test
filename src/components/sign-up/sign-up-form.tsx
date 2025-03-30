@@ -69,6 +69,7 @@ export function SignUpForm() {
   async function handleNext(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const isValid = await form.trigger(formSteps[page].fields as any, { shouldFocus: true });
 
     if (isValid) {

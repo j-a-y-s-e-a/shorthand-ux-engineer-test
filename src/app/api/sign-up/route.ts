@@ -1,6 +1,7 @@
 export async function POST(request: Request) {
   try {
     // Handle request...
+    console.log(request);
 
     return new Response("USER_CREATED", {
       status: 201,
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
 
   } catch (error) {
     // Handle error...
+    console.error(error);
 
     return new Response("USER_NOT_CREATED", {
       status: 418,
