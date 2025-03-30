@@ -2,6 +2,8 @@ import { z } from "zod";
 
 // z.enum only takes tuples so need to explicity type these as a tuple
 export const organizationSizes = ["1-50", "51-200", "201-500", "501-1000", "1000+"] as const;
+export const organizationCategories = ["Retail", "Marketing", "Software", "Finance", "Commercial", "Entertainment", "Transportation"] as const;
+export const userRoles = ["Manager", "Engineer", "Designer"] as const;
 export const pricingPlanOptions = ["starter", "team", "business", "enterprise"] as const;
 
 export const formSchema = z.object({
@@ -18,10 +20,10 @@ export const formSchema = z.object({
   /* Step 2: Organization Information */
   organizationName: z.string().min(2, { message: "Organization name must be at least 2 characters long" }),
   organizationSize: z.enum(organizationSizes, { errorMap: () => ({ message: "Please select the organization size" }) }),
-  organizationCategory: z.string().min(2, { message: "Organization category must be at least 2 characters long." }),
-
+  organizationCategory: z.enum(organizationCategories, { errorMap: () => ({ message: "Please select the organization category" }) }),
+  
   /* Step 3: User Role and Team Members */
-  userRole: z.string().min(2, { message: "User role must be at least 2 characters long." }),
+  userRole: z.enum(userRoles, { errorMap: () => ({ message: "Please select your role" }) }),
   teamMemberInvites: z.array(z.object({ email: z.string().email({ message: "Please enter a valid email." }), })).optional(),
 
   /* Step 4: Pricing Plan and Terms */

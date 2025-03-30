@@ -13,9 +13,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components//ui/checkbox";
 import { createUser } from "@/server/actions";
-import { formSchema, organizationSizes, pricingPlanOptions } from "@/lib/schema";
+import { formSchema, organizationCategories, organizationSizes, pricingPlanOptions, userRoles } from "@/lib/schema";
 import { MAX_PAGE_COUNT } from "@/lib/constants";
 import pricingPlans from "@/lib/plans.json";
+import { formatPlan } from "@/lib/utils";
 
 const formSteps = [
   { id: 'personal-information', title: "Personal Information", fields: ["name", "email", "password"] },
@@ -47,8 +48,8 @@ export function SignUpForm() {
       password: "",
       organizationName: "",
       organizationSize: undefined,
-      organizationCategory: "",
-      userRole: "",
+      organizationCategory: undefined,
+      userRole: undefined,
       teamMemberInvites: [],
       pricingPlan: undefined,
       acceptTermsAndConditions: undefined,
@@ -81,7 +82,7 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="grid grid-rows-[auto_1fr] gap-4 overflow-y-auto p-4 rounded-md border shadow-md w-[80vw] sm:w-[500px] min-h-[500px]">
+    <div className="grid grid-rows-[auto_1fr] gap-4 overflow-y-auto p-4 rounded-md border shadow-md w-[80vw] sm:w-[500px] min-h-[500px] max-h-[500px]">
       <div className="flex flex-row gap-4 justify-between text-muted-foreground text-sm font-mono tracking-tighter">
         <div className="flex flex-row gap-4">
           <div>
@@ -120,7 +121,7 @@ export function SignUpForm() {
 
               {/** Step 1: Personal Information */}
               {page === 0 && (
-                <>
+                <div className="space-y-10">
                   <FormField
                     control={form.control}
                     name="name"
@@ -171,11 +172,11 @@ export function SignUpForm() {
                       </FormItem>
                     )}
                   />
-                </>
+                </div>
               )}
               {/** Step 2: Organisational Information */}
               {page === 1 && (
-                <>
+                <div className="space-y-10">
                   <FormField
                     control={form.control}
                     name="organizationName"
@@ -193,6 +194,30 @@ export function SignUpForm() {
                   />
                   <FormField
                     control={form.control}
+                    name="organizationCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex flex-row items-center justify-between">
+                          <FormLabel>Organization Category</FormLabel>
+                          <FormMessage />
+                        </div>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {organizationCategories.map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>{category}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name="organizationSize"
                     render={({ field }) => (
                       <FormItem>
@@ -202,8 +227,8 @@ export function SignUpForm() {
                         </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a size" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -212,52 +237,44 @@ export function SignUpForm() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormDescription>
-                          The number of employees at your organization
-                        </FormDescription>
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="organizationCategory"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex flex-row items-center justify-between">
-                          <FormLabel>Organization Category</FormLabel>
-                          <FormMessage />
-                        </div>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          The category of the Organization
-                        </FormDescription>
-                      </FormItem>
-                    )}
-                  />
-                </>
+                </div>
               )}
               {/** Step 3: User Role and Team Members */}
               {page === 2 && (
-                <>
+                <div className="space-y-10">
                   <FormField
                     control={form.control}
                     name="userRole"
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex flex-row items-center justify-between">
-                          <FormLabel>User Role</FormLabel>
+                          <FormLabel>Your Role</FormLabel>
                           <FormMessage />
                         </div>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {userRoles.map((role, index) => (
+                              <SelectItem key={`${role}-${index}`} value={role}>{role}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormItem>
                     )}
                   />
 
                   <div className="space-y-4">
+                    <div className="flex flex-row items-center justify-between">
+                      <FormLabel>Invite Team Members</FormLabel>
+                      <FormDescription>You can also skip this for now</FormDescription>
+                    </div>
                     {invites.map((field, index) => (
                       <div key={field.id} className="flex items-end gap-3">
                         <FormField
@@ -265,8 +282,8 @@ export function SignUpForm() {
                           name={`teamMemberInvites.${index}.email`}
                           render={({ field }) => (
                             <FormItem className="flex-1">
-                              <div className="flex flex-row items-center justify-between">
-                                <FormLabel className={index !== 0 ? "sr-only" : "text-sm"}>Email</FormLabel>
+                              <div className="flex flex-row items-center w-full justify-between">
+                                <FormLabel>Invite Email</FormLabel>
                                 <FormMessage />
                               </div>
                               <FormControl>
@@ -280,10 +297,10 @@ export function SignUpForm() {
 
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant="outline"
                           size="icon"
                           onClick={() => removeInvite(index)}
-                          className="h-12 w-12 rounded-lg hover:bg-destructive/10 hover:text-destructive"
+                          className="hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="h-5 w-5" />
                         </Button>
@@ -293,15 +310,14 @@ export function SignUpForm() {
                     <Button
                       type="button"
                       variant="outline"
-                      size="lg"
-                      className="mt-4 w-full border-dashed border-2"
+                      className="w-full border-dashed border"
                       onClick={() => addInvite({ email: "" })}
                     >
-                      <Plus className="mr-2 h-5 w-5" />
+                      <Plus className="h-5 w-5" />
                       Add Team Member
                     </Button>
                   </div>
-                </>
+                </div>
               )}
               {/** Step 4: Pricing PLan and Terms */}
               {page === 3 && (
@@ -313,14 +329,13 @@ export function SignUpForm() {
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue="starter"
                           className="grid grid-cols-2 w-full gap-0"
                         >
                           {pricingPlanOptions.map((plan, index) => (
                             <div key={`${plan}-${index}`} className="relative flex items-center h-full p-2">
                               <RadioGroupItem id={plan} value={plan} className="peer absolute opacity-0" />
-                              <FormLabel htmlFor={plan} className="flex flex-col items-start gap-4 p-2 border w-full h-full rounded text-xs peer-data-[state=checked]:bg-accent">
-                                <div className="text-start text-lg">{plan.charAt(0).toUpperCase() + plan.slice(1)}</div>
+                              <FormLabel htmlFor={plan} className="flex flex-col items-start gap-4 p-2 border w-full h-full rounded text-xs peer-data-[state=checked]:bg-accent data-[error=true]:text-foreground">
+                                <div className="text-start text-lg">{formatPlan(plan)}</div>
                                 <div className="text-muted-foreground">{pricingPlans[plan].description}</div>
                                 <div className="text-sm">{pricingPlans[plan].price}</div>
                               </FormLabel>
@@ -328,13 +343,14 @@ export function SignUpForm() {
                           ))}
                         </RadioGroup>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               )}
               {/** Step 5: Terms and Conditions */}
               {page === 4 && (
-                <div className="flex flex-col gap-4">
+                <div className="space-y-4">
                   <FormField
                     control={form.control}
                     name="acceptMailingList"
@@ -416,7 +432,7 @@ export function SignUpForm() {
                         Pricing Plan
                       </span>
                       <span className="text-foreground">
-                        {form.getValues().pricingPlan}
+                        {formatPlan(form.getValues().pricingPlan)}
                       </span>
                     </div>
                   </div>
@@ -460,17 +476,17 @@ export function SignUpForm() {
             {/** Button Row */}
             <div className="flex flex-row justify-end gap-4">
               {page > 0 && (
-                <Button type="button" onClick={handlePrevious}>
+                <Button type="button" size="sm" onClick={handlePrevious}>
                   Previous
                 </Button>
               )}
               {page < 5 && (
-                <Button type="button" onClick={handleNext}>
+                <Button type="button" size="sm" onClick={handleNext}>
                   Next
                 </Button>
               )}
               {page === 5 && (
-                <Button type="submit">
+                <Button type="submit" size="sm">
                   Create
                 </Button>
               )}
