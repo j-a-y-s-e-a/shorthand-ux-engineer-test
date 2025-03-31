@@ -69,8 +69,7 @@ export function SignUpForm() {
   async function handleNext(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isValid = await form.trigger(formSteps[page].fields as any, { shouldFocus: true });
+    const isValid = await form.trigger(formSteps[page].fields as (keyof FormData)[], { shouldFocus: true });
 
     if (isValid) {
       setAnimationDirection(1);
@@ -98,12 +97,12 @@ export function SignUpForm() {
   };
 
   return (
-    <div className="grid grid-rows-[auto_1fr] gap-4 overflow-y-auto overflow-x-hidden rounded-md border shadow-md w-[80vw] sm:w-[500px] min-h-[500px]">
+    <div className="grid grid-rows-[auto_1fr] gap-4 overflow-y-auto overflow-x-hidden rounded-md border shadow-md w-[90vw] sm:w-[600px] min-h-[550px]">
       <div className="flex flex-row gap-4 border-b items-center text-muted-foreground text-xs py-2 px-4 font-mono tracking-tighter">
         <div className="text-nowrap leading-none">
           {`Step ${page + 1} / ${MAX_PAGE_COUNT + 1}`}
         </div>
-        <Progress value={calculateProgress} />
+        <Progress value={calculateProgress} aria-label={`Form Progress: ${calculateProgress}%`} />
       </div>
       <div>
         <Form {...form}>
@@ -136,36 +135,30 @@ export function SignUpForm() {
                 }}
                 className="w-full h-full p-4"
               >
-                <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl tracking-tight leading-none">{formSteps[page].title}</h2>
-                  </div>
-
-                  {/** Step 1: Personal Information */}
-                  {page === 0 && (
-                    <PersonalInformation />
-                  )}
-                  {/** Step 2: Organisational Information */}
-                  {page === 1 && (
-                    <OrganizationalInformation />
-                  )}
-                  {/** Step 3: User Role and Team Members */}
-                  {page === 2 && (
-                    <TeamManagement />
-                  )}
-                  {/** Step 4: Pricing PLan and Terms */}
-                  {page === 3 && (
-                    <PricingPlan />
-                  )}
-                  {/** Step 5: Terms and Conditions */}
-                  {page === 4 && (
-                    <TermsAndConditions />
-                  )}
-                  {/** Confirmation Page */}
-                  {page === 5 && (
-                    <Confirmation />
-                  )}
-                </div>
+                {/** Step 1: Personal Information */}
+                {page === 0 && (
+                  <PersonalInformation />
+                )}
+                {/** Step 2: Organisational Information */}
+                {page === 1 && (
+                  <OrganizationalInformation />
+                )}
+                {/** Step 3: User Role and Team Members */}
+                {page === 2 && (
+                  <TeamManagement />
+                )}
+                {/** Step 4: Pricing PLan and Terms */}
+                {page === 3 && (
+                  <PricingPlan />
+                )}
+                {/** Step 5: Terms and Conditions */}
+                {page === 4 && (
+                  <TermsAndConditions />
+                )}
+                {/** Confirmation Page */}
+                {page === 5 && (
+                  <Confirmation />
+                )}
               </motion.div>
             </AnimatePresence>
 

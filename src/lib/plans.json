@@ -1,18 +1,35 @@
 {
-  "starter": {
-    "description": "An introduction to premium visual storytelling.",
-    "price": "$40/month"
+  "hobby": {
+    "description": "Basic features for individuals.",
+    "price": "$0",
+    "billingPeriod": "forever",
+    "features": [
+      "1 Organization",
+      "1GB Storage",
+      "Basic Support"
+    ]
   },
-  "team": {
-    "description": "Build your own themes & structure your work with teams.",
-    "price": "$400/month"
-  },
-  "business": {
-    "description": "Access publishing integrations & handcrafted branded themes.",
-    "price": "$800/month"
+  "pro": {
+    "description": "Complete features for professionals.",
+    "price": "$20",
+    "billingPeriod": "per month",
+    "features": [
+      "Up to 3 Organizations",
+      "100GB Storage",
+      "Priority Support",
+      "Basic Analytics"
+    ]
   },
   "enterprise": {
-    "description": "Important stories at scale with best-in-class compliance.",
-    "price": "Contact Us"
+    "description": "Enterprise-level features.",
+    "price": "Contact Us",
+    "billingPeriod": "",
+    "features": [
+      "Up to 10 Organizations",
+      "1TB Storage",
+      "24/7 Customer Support",
+      "Advanced Analytics",
+      "Advanced Security"
+    ]
   }
 }
